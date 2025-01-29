@@ -32,7 +32,7 @@ class AnomalyDetector:
         print(metrics.compute())
 
     def multimahalanobis(self, layers, plot_scores=False):
-        detector = MultiMahalanobis(layers=layers, plot_scores=plot_scores)  # Initialize properly
+        detector = MultiMahalanobis(layers)  # Initialize properly
         detector.fit(self.fit_loader, device=self.device)  # Use self.device
 
         metrics = OODMetrics()
