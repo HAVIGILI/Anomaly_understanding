@@ -18,7 +18,7 @@ class Trainer:
 
     def train(self):
         for epoch in range(self.num_epochs):
-            self.model.train()  # Set model to training mode
+            self.model.train()
             running_loss = 0.0
             for i, (inputs, labels) in enumerate(self.train_loader):
                 inputs = inputs.to(self.device)
@@ -28,16 +28,12 @@ class Trainer:
                 self.optimizer.zero_grad()
                 
                 # Forward pass
-                outputs = self.model(inputs)  # [batch_size, num_classes]
+                outputs = self.model(inputs)
                 
                 # Compute loss
                 loss = self.criterion(outputs, labels)
-                
-                # Backward pass and optimize
                 loss.backward()
                 self.optimizer.step()
-                
-                # Accumulate loss
                 running_loss += loss.item()
                 
                 if (i + 1) % 100 == 0:
@@ -55,7 +51,7 @@ class Trainer:
             for inputs, labels in self.test_loader:
                 inputs = inputs.to(self.device)
                 labels = labels.to(self.device)
-                outputs = self.model(inputs)  # [batch_size, num_classes]
+                outputs = self.model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
