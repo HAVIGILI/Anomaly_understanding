@@ -1,6 +1,6 @@
 from torch.utils.data import DataLoader
 from pytorch_ood.utils import OODMetrics
-from pytorch_ood.detector import Mahalanobis, MultiMahalanobis, OpenMax
+from pytorch_ood.detector import Mahalanobis, MultiMahalanobis, OpenMax, Gram, MaxSoftmax, MCD
 import matplotlib.pyplot as plt
 
 class AnomalyDetector:
@@ -58,6 +58,27 @@ class AnomalyDetector:
 
     def multimahalanobis(self, layers, plot_scores=False):
         detector = MultiMahalanobis(layers)
+        metrics = OODMetrics()
+        detector.fit(self.fit_loader, device=self.device)
+
+        self._test_and_plot_scores(detector, metrics, plot_scores=plot_scores)
+
+    def gram(self, head, layers, num_classes, num_poles_list, plot_scores=False):
+        detector = Gram(head, layers, num_classes, num_poles_list)
+        metrics = OODMetrics()
+        detector.fit(self.fit_loader, device=self.device)
+
+        self._test_and_plot_scores(detector, metrics, plot_scores=plot_scores)
+
+    def maxsoftmax(self, plot_scores=False):
+        detector = MaxSoftmax(self.model)
+        metrics = OODMetrics()
+        detector.fit(self.fit_loader, device=self.device)
+
+        self._test_and_plot_scores(detector, metrics, plot_scores=plot_scores)
+        
+    def mcd(self, samples, plot_scores=False):
+        detector = MCD(self.model, samples=samples)
         metrics = OODMetrics()
         detector.fit(self.fit_loader, device=self.device)
 
